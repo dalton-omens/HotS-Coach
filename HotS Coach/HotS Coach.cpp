@@ -1,5 +1,6 @@
 // HotS Coach.cpp : Defines the entry point for the application.
 //
+// HELLO MAX
 
 #include "stdafx.h"
 #include "HotS Coach.h"
