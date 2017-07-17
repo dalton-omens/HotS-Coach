@@ -76,7 +76,7 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
     wcex.hInstance      = hInstance;
     wcex.hIcon          = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_HOTSCOACH));
     wcex.hCursor        = LoadCursor(nullptr, IDC_ARROW);
-    wcex.hbrBackground  = (HBRUSH)(COLOR_WINDOW+1);
+    wcex.hbrBackground  = (HBRUSH)(COLOR_HIGHLIGHT+1);
     wcex.lpszMenuName   = MAKEINTRESOURCEW(IDC_HOTSCOACH);
     wcex.lpszClassName  = szWindowClass;
     wcex.hIconSm        = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
@@ -127,27 +127,36 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     switch (message)
     {
     case WM_COMMAND:
-        {
-            int wmId = LOWORD(wParam);
-            // Parse the menu selections:
-            switch (wmId)
-            {
-            case IDM_ABOUT:
-                DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);
-                break;
-            case IDM_EXIT:
-                DestroyWindow(hWnd);
-                break;
-            default:
-                return DefWindowProc(hWnd, message, wParam, lParam);
-            }
-        }
+	    {
+		    int wmId = LOWORD(wParam);
+		    // Parse the menu selections:
+		    switch (wmId)
+		    {
+		    case IDM_ABOUT:
+			    DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);
+			    break;
+		    case IDM_EXIT:
+			    DestroyWindow(hWnd);
+			    break;
+		    default:
+			    return DefWindowProc(hWnd, message, wParam, lParam);
+		    }
+	    }
         break;
     case WM_PAINT:
         {
             PAINTSTRUCT ps;
             HDC hdc = BeginPaint(hWnd, &ps);
             // TODO: Add any drawing code that uses hdc here...
+
+			RECT thisRect;
+			SetRect(&thisRect, 10, 10, 100, 100);
+			WCHAR words[MAX_LOADSTRING];
+			LoadStringW(hInst, IDS_STRING_HELLO, words, MAX_LOADSTRING);
+			SetBkMode(hdc, TRANSPARENT);
+			SetTextColor(hdc, 0b011001100101);
+			DrawText(hdc, words, -1, &thisRect, DT_BOTTOM);
+
             EndPaint(hWnd, &ps);
         }
         break;
