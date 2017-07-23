@@ -76,7 +76,7 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
     wcex.hInstance      = hInstance;
     wcex.hIcon          = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_HOTSCOACH));
     wcex.hCursor        = LoadCursor(nullptr, IDC_ARROW);
-    wcex.hbrBackground  = (HBRUSH)(COLOR_HIGHLIGHT+1);
+    wcex.hbrBackground  = CreateSolidBrush(RGB(36, 13, 95));
     wcex.lpszMenuName   = MAKEINTRESOURCEW(IDC_HOTSCOACH);
     wcex.lpszClassName  = szWindowClass;
     wcex.hIconSm        = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
@@ -100,6 +100,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 
    HWND hWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
       CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, nullptr, nullptr, hInstance, nullptr);
+
 
    if (!hWnd)
    {
@@ -127,6 +128,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     switch (message)
     {
     case WM_COMMAND:
+		/* User clicked on a button in the top menu. */
 	    {
 		    int wmId = LOWORD(wParam);
 		    // Parse the menu selections:
@@ -144,6 +146,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	    }
         break;
     case WM_PAINT:
+		/* Re-pain the client area. */
         {
             PAINTSTRUCT ps;
             HDC hdc = BeginPaint(hWnd, &ps);
@@ -160,6 +163,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             EndPaint(hWnd, &ps);
         }
         break;
+	case WM_GETMINMAXINFO:
+		/* Minimum and maximum window sizes */
+		{
+			LPMINMAXINFO lpMMI = (LPMINMAXINFO)lParam;
+			lpMMI->ptMinTrackSize.x = 300;
+			lpMMI->ptMinTrackSize.y = 300;
+		}
+		break;
     case WM_DESTROY:
         PostQuitMessage(0);
         break;
