@@ -11,6 +11,7 @@
 HINSTANCE hInst;                                // current instance
 WCHAR szTitle[MAX_LOADSTRING];                  // The title bar text
 WCHAR szWindowClass[MAX_LOADSTRING];            // the main window class name
+BOOL clicky;                                    // temp testing variable //TODO: remove this
 
 // Forward declarations of functions included in this code module:
 ATOM                MyRegisterClass(HINSTANCE hInstance);
@@ -146,23 +147,46 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	    }
         break;
     case WM_PAINT:
-		/* Re-pain the client area. */
+		/* Re-paint the client area. */
         {
             PAINTSTRUCT ps;
             HDC hdc = BeginPaint(hWnd, &ps);
             // TODO: Add any drawing code that uses hdc here...
 
 			RECT thisRect;
-			SetRect(&thisRect, 10, 10, 100, 100);
+			GetClientRect(hWnd, &thisRect);  //sets thisRect to be the whole client area
 			WCHAR words[MAX_LOADSTRING];
 			LoadStringW(hInst, IDS_STRING_HELLO, words, MAX_LOADSTRING);
 			SetBkMode(hdc, TRANSPARENT);
-			SetTextColor(hdc, 0b011001100101);
-			DrawText(hdc, words, -1, &thisRect, DT_BOTTOM);
+			if (clicky)
+			{
+				SetTextColor(hdc, RGB(85, 232, 37));
+			} 
+    		else
+			{
+				SetTextColor(hdc, RGB(32, 29, 242));
+			}
+			DrawText(hdc, words, -1, &thisRect, DT_SINGLELINE | DT_CENTER | DT_VCENTER);
 
             EndPaint(hWnd, &ps);
         }
         break;
+	case WM_LBUTTONDOWN:
+		/* Left mouse button pressed down. */
+		{
+		POINT mousePoint;
+		mousePoint.x = GET_X_LPARAM(lParam);
+		mousePoint.y = GET_Y_LPARAM(lParam);
+		OutputDebugString(_T("TEST\n"));
+		RECT rect;
+		GetClientRect(hWnd, &rect);
+		if (PtInRect(&rect, mousePoint))
+			{
+			clicky = !clicky;
+			}
+		InvalidateRect(hWnd, NULL, NULL); //Tells windows that the entire client area needs to be redrawn
+		}
+		break;
 	case WM_GETMINMAXINFO:
 		/* Minimum and maximum window sizes */
 		{
